@@ -1,0 +1,594 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scraping - Add University Website</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Add Bootstrap Icons for better icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f7fb;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            justify-content:center;
+            padding: 20px;
+        }
+
+        .side-bar {
+      width: 200px;
+      height: 100%;
+      background: #EEF3F7;
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .logo {
+      margin-bottom: 40px;
+    }
+
+    .logo img {
+      max-width: 150px;
+    }
+
+    .side-bar nav {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .side-bar nav a {
+      text-decoration: none;
+      color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+
+    .side-bar nav a:hover {
+      background: rgba(77, 113, 187, 0.1);
+      color: #4D71BB;
+    }
+
+    .side-bar nav a.active {
+      background: rgba(77, 113, 187, 0.2);
+      color: #4D71BB;
+      font-weight: 600;
+    }
+
+        .scraping-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 700px;
+            max-width: 100%;
+            padding: 50px 60px;
+            
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .scraping-icon {
+            width: 60px;
+            height: 60px;
+            background: #e8f0fe;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scraping-icon i {
+            font-size: 30px;
+            color: #173E8F;
+        }
+
+        .header-text h1 {
+            color: #173E8F;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .header-text p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Instructions */
+        .instructions {
+            background: #f8faff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            border-left: 4px solid #173E8F;
+        }
+
+        .instructions i {
+            font-size: 24px;
+            color: #173E8F;
+        }
+
+        .instructions-text h3 {
+            color: #173E8F;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .instructions-text p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            color: #173E8F;
+            font-weight: 500;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .url-input-container {
+            display: flex;
+            align-items: center;
+            background: #f8faff;
+            border: 2px solid #e0e7f0;
+            border-radius: 12px;
+            padding: 5px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .url-input-container:focus-within {
+            border-color: #173E8F;
+            box-shadow: 0 0 0 4px rgba(23, 62, 143, 0.1);
+        }
+
+        .url-input-container i {
+            color: #173E8F;
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+        .url-input-container input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 15px 0;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            outline: none;
+        }
+
+        .url-input-container input::placeholder {
+            color: #999;
+            font-size: 14px;
+        }
+
+        /* Example URL */
+        .example-url {
+            margin-top: 8px;
+            margin-left: 50px;
+            color: #888;
+            font-size: 13px;
+        }
+
+        .example-url i {
+            color: #173E8F;
+            font-size: 14px;
+            margin-right: 5px;
+        }
+
+        /* Options */
+        .options {
+            background: #f8faff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .options-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #173E8F;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        .options-title i {
+            font-size: 18px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #173E8F;
+        }
+
+        .checkbox-item label {
+            color: #555;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Progress Bar (optional - shows when scraping) */
+        .progress-section {
+            margin-bottom: 30px;
+            display: none; /* Hidden by default, show with JS when scraping starts */
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e0e7f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #173E8F, #4D71BB);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-cancel {
+            background: #e0e7f0;
+            color: #173E8F;
+        }
+
+        .btn-cancel:hover {
+            background: #d1dae5;
+        }
+
+        .btn-add {
+            background: #173E8F;
+            color: white;
+        }
+
+        .btn-add:hover {
+            background: #14367c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(23, 62, 143, 0.3);
+        }
+
+        .btn-add:active {
+            transform: translateY(0);
+        }
+
+        .btn-add i {
+            font-size: 18px;
+        }
+
+        /* Recent URLs (optional) */
+        .recent-urls {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e7f0;
+        }
+
+        .recent-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #173E8F;
+            font-weight: 500;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .recent-header i {
+            font-size: 16px;
+        }
+
+        .url-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .url-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 15px;
+            background: #f8faff;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .url-item span {
+            color: #666;
+        }
+
+        .url-item i {
+            color: #4CAF50;
+            font-size: 16px;
+        }
+
+        .url-item .status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status i {
+            font-size: 14px;
+        }
+
+        .status .success {
+            color: #4CAF50;
+        }
+
+        .status .pending {
+            color: #ffa502;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="side-bar">
+  <div class="logo">
+    <img src="{% static 'images/cerist_logo.png' %}" alt="Cerist">
+  </div>
+
+  <nav> 
+    <a href="{% url 'dashboard' %}" >
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 40 40" fill="none">
+        <path d="M14 5H9.33333C8.62609 5 7.94781 5.28095 7.44771 5.78105C6.94762 6.28115 6.66667 6.95942 6.66667 7.66667V15.6667C6.66667 16.0169 6.73564 16.3636 6.86965 16.6872C7.00367 17.0107 7.20009 17.3047 7.44771 17.5523C7.69534 17.7999 7.98931 17.9963 8.31284 18.1303C8.63638 18.2644 8.98314 18.3333 9.33333 18.3333H14C14.3502 18.3333 14.697 18.2644 15.0205 18.1303C15.344 17.9963 15.638 17.7999 15.8856 17.5523C16.1332 17.3047 16.3297 17.0107 16.4637 16.6872C16.5977 16.3636 16.6667 16.0169 16.6667 15.6667V7.66667C16.6667 6.95942 16.3857 6.28115 15.8856 5.78105C15.3855 5.28095 14.7072 5 14 5ZM14 25H9.33333C8.62609 25 7.94781 25.281 7.44771 25.781C6.94762 26.2811 6.66667 26.9594 6.66667 27.6667V32.3333C6.66667 33.0406 6.94762 33.7189 7.44771 34.2189C7.94781 34.719 8.62609 35 9.33333 35H14C14.7072 35 15.3855 34.719 15.8856 34.2189C16.3857 33.7189 16.6667 33.0406 16.6667 32.3333V27.6667C16.6667 26.9594 16.3857 26.2811 15.8856 25.781C15.3855 25.281 14.7072 25 14 25ZM30.6667 5H26C25.2928 5 24.6145 5.28095 24.1144 5.78105C23.6143 6.28115 23.3333 6.95942 23.3333 7.66667V12.3333C23.3333 13.0406 23.6143 13.7189 24.1144 14.219C24.6145 14.719 25.2928 15 26 15H30.6667C31.3739 15 32.0522 14.719 32.5523 14.219C33.0524 13.7189 33.3333 13.0406 33.3333 12.3333V7.66667C33.3333 6.95942 33.0524 6.28115 32.5523 5.78105C32.0522 5.28095 31.3739 5 30.6667 5ZM30.6667 21.6667H26C25.2928 21.6667 24.6145 21.9476 24.1144 22.4477C23.6143 22.9478 23.3333 23.6261 23.3333 24.3333V32.3333C23.3333 33.0406 23.6143 33.7189 24.1144 34.2189C24.6145 34.719 25.2928 35 26 35H30.6667C31.3739 35 32.0522 34.719 32.5523 34.2189C33.0524 33.7189 33.3333 33.0406 33.3333 32.3333V24.3333C33.3333 23.6261 33.0524 22.9478 32.5523 22.4477C32.0522 21.9476 31.3739 21.6667 30.6667 21.6667Z" stroke="black" stroke-width="3" stroke-opacity=""/>
+      </svg>
+      <span>Dashboard</span>
+    </a>
+
+    <a href="{% url 'scraping_page' %}" class="active">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 30 30" fill="none">
+        <g clip-path="url(#clip0_6_16)">
+          <path d="M26.1973 5.05078C23.4551 1.95703 19.4648 0 15 0C6.71484 0 0 6.71484 0 15H3.75C3.75 8.7832 8.7832 3.75 15 3.75C18.4277 3.75 21.4688 5.30273 23.5254 7.72266L19.998 11.25H30V1.24805L26.1973 5.05078ZM15 26.25C11.5723 26.25 8.53125 24.6973 6.47461 22.2773L10.002 18.75H0V28.752L3.80273 24.9492C6.54492 28.043 10.541 30 15 30C23.2852 30 30 23.2852 30 15H26.25C26.25 21.2168 21.2168 26.25 15 26.25Z" fill="#4D71BB"/>
+        </g>
+      </svg>
+      <span>Scraping</span>
+    </a>
+ 
+    <a href="{% url 'conference_list' %}">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 48 48" fill="none">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M40.1419 24V27.9996H30.828L43.2115 40.383L40.383 43.2114L27.9998 30.8282L28.0003 40.1413H24.0008L24 24H40.1419ZM20.0002 4.00003C28.8366 4.00003 36 7.58175 36 12V20H32.0001V17.2916L32.0359 17.2711L31.9708 17.3082C29.0397 18.9594 24.763 20.0001 20.0001 20.0001C15.1904 20.0001 10.8764 18.9389 7.94347 17.2595L7.99934 17.2913L7.99869 22H8.00009C8.00009 22.3581 8.70894 23.1961 10.4752 24.0792C12.8697 25.2764 16.2912 26.0001 20.0001 26.0001V30C15.2202 30 10.9298 28.9521 7.99794 27.2905L7.99747 31.8562L8.00028 32.0058C8.11015 33.5311 13.2185 36 20.0001 36V40C11.3599 40 4.31928 36.5757 4.01065 32.2933L4.00006 32.0001V12C4.00006 7.58175 11.1635 4.00003 20.0001 4.00003M20.0001 8.00006C16.2913 8.00006 12.8697 8.72362 10.4752 9.92091C8.70894 10.804 8.00009 11.642 8.00009 12C8.00009 12.3581 8.70894 13.1961 10.4752 14.0792C12.8697 15.2764 16.2912 16 20.0001 16C23.7088 16 27.1304 15.2765 29.5249 14.0791C31.2912 13.196 32.0001 12.358 32.0001 12C32.0001 11.642 31.2912 10.804 29.5249 9.92091C27.1304 8.72362 23.7088 8.00006 20.0001 8.00006Z" fill="black" fill-opacity="0.7"/>
+      </svg>
+      <span>Database</span>
+    </a>
+  </nav>
+</div>
+
+    <div class="scraping-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="scraping-icon">
+                <i class="bi bi-cloud-arrow-up-fill"></i>
+            </div>
+            <div class="header-text">
+                <h1>Scraping</h1>
+                <p>Add the URL of the university website to scrape conferences</p>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="instructions">
+            <i class="bi bi-info-circle-fill"></i>
+            <div class="instructions-text">
+                <h3>Add university website</h3>
+                <p>Enter the complete URL of the university website. The system will automatically extract all conference information from the site.</p>
+            </div>
+        </div>
+
+        <!-- Main Form -->
+        <form method="POST" action="{% url 'start_scraping' %}" id="scraping-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label class="form-label">University Website URL</label>
+                <div class="url-input-container">
+                    <i class="bi bi-link-45deg"></i>
+                    <input type="url" 
+                           name="university_url" 
+                           placeholder="https://www.university.dz" 
+                           value=""
+                           required
+                           pattern="https?://.+"
+                           title="Please enter a valid URL starting with http:// or https://">
+                </div>
+                <div class="example-url">
+                    <i class="bi bi-lightbulb"></i>
+                    Example: https://www.univ-alger.dz, https://www.usthb.edu.dz
+                </div>
+            </div>
+
+            <!-- Scraping Options -->
+            <div class="options">
+                <div class="options-title">
+                    <i class="bi bi-sliders2"></i>
+                    <span>Scraping Options</span>
+                </div>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="scrape_conferences" checked>
+                        <span>Scrape conferences</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="scrape_faculties">
+                        <span>Include faculty details</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="deep_scan">
+                        <span>Deep scan (slower but more results)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Progress Bar (hidden by default) -->
+            <div class="progress-section" id="progress-section">
+                <div class="progress-label">
+                    <span>Scraping in progress...</span>
+                    <span id="progress-percent">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-group">
+                <a href="{% url 'dashboard' %}" class="btn btn-cancel">
+                    <i class="bi bi-x-lg"></i>
+                    Cancel
+                </a>
+                <button type="submit" class="btn btn-add" id="submit-btn">
+                    <i class="bi bi-plus-lg"></i>
+                    Add URL
+                </button>
+            </div>
+        </form>
+
+        <!-- Recent URLs (optional) -->
+        <div class="recent-urls">
+            <div class="recent-header">
+                <i class="bi bi-clock-history"></i>
+                <span>Recently Added URLs</span>
+            </div>
+            <div class="url-list">
+                <div class="url-item">
+                    <span>https://www.usthb.edu.dz</span>
+                    <div class="status">
+                        <i class="bi bi-check-circle-fill success"></i>
+                        <span>Completed</span>
+                    </div>
+                </div>
+                <div class="url-item">
+                    <span>https://www.univ-alger.dz</span>
+                    <div class="status">
+                        <i class="bi bi-hourglass-split pending"></i>
+                        <span>In Progress</span>
+                    </div>
+                </div>
+                <div class="url-item">
+                    <span>https://www.ensa.dz</span>
+                    <div class="status">
+                        <i class="bi bi-check-circle-fill success"></i>
+                        <span>Completed</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for progress simulation (optional) -->
+    <script>
+        document.getElementById('scraping-form').addEventListener('submit', function(e) {
+            e.preventDefault(); // Remove this in production, it's just for demo
+            
+            // Show progress section
+            const progressSection = document.getElementById('progress-section');
+            const submitBtn = document.getElementById('submit-btn');
+            const progressFill = document.getElementById('progress-fill');
+            const progressPercent = document.getElementById('progress-percent');
+            
+            progressSection.style.display = 'block';
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Scraping...';
+            
+            // Simulate progress (replace with actual AJAX call in production)
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                progressFill.style.width = progress + '%';
+                progressPercent.textContent = progress + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        window.location.href = "{% url 'dashboard' %}"; // Redirect when done
+                    }, 500);
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>
