@@ -10,8 +10,8 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
-            # Redirect to dashboard instead of conference list
-            return redirect("dashboard")  # Change this to your dashboard URL name
+           
+            return redirect("dashboard")  
         else:
             messages.error(request, "Nom d'utilisateur ou mot de passe incorrect.")
     return render(request, "accounts/login.html")

@@ -1,41 +1,12 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from django.contrib import messages
-
-
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user:
-            login(request, user)
-            return redirect('conference_list')
-        else:
-            messages.error(request, "Nom d'utilisateur ou mot de passe incorrect")
-    return render(request, 'accounts/login.html')
-
-
-def signup_view(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password']
-        confirm = request.POST['confirm']
-
-        if password != confirm:
-            messages.error(request, "Les mots de passe ne correspondent pas")
-        elif User.objects.filter(username=username).exists():
-            messages.error(request, "Nom d'utilisateur déjà utilisé")
-        else:
-            User.objects.create_user(username=username, email=email, password=password)
-            messages.success(request, "Compte créé avec succès 🎉")
-            return redirect('login')
-
-    return render(request, 'accounts/signup.html')
-
-
-def logout_view(request):
-    logout(request)
-    return redirect('login')
+venv/
+*.pyc
+__pycache__/
+*.log
+.env
+db.sqlite3
+*.sqlite3
+.DS_Store
+.vscode/
+*.swp
+*.swo
+*~
