@@ -186,7 +186,7 @@
 <body>
 
   <div class="floating-logout">
-    <form method="POST" action="{% url 'logout' %}">
+    <form method="POST" action="{% url 'accounts:logout' %}">
         {% csrf_token %}
         <button type="submit" class="logout-btn-modern">
             <span> <i class="bi bi-box-arrow-left"></i> Logout</span>
@@ -222,6 +222,13 @@
       </svg>
       <span>Database</span>
     </a>
+    {% if request.user.is_staff %}
+<a href="{% url 'accounts:admin_dashboard' %}" style="background: #1e40af; color: white; border-radius: 10px; margin-top: 20px;">
+  <i class="bi bi-speedometer2" style="font-size: 24px;"></i>
+  <span>Admin Panel</span>
+</a>
+{% endif %}
+
   </nav>
 </div>
 

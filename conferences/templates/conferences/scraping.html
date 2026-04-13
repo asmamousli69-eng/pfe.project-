@@ -435,6 +435,13 @@
       </svg>
       <span>Database</span>
     </a>
+    {% if request.user.is_staff %}
+<a href="{% url 'accounts:admin_dashboard' %}" style="background: #1e40af; color: white; border-radius: 10px; margin-top: 20px;">
+  <i class="bi bi-speedometer2" style="font-size: 24px;"></i>
+  <span>Admin Panel</span>
+</a>
+{% endif %}
+
   </nav>
 </div>
 
@@ -496,10 +503,7 @@
                         <input type="checkbox" name="scrape_faculties">
                         <span>Include faculty details</span>
                     </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="deep_scan">
-                        <span>Deep scan (slower but more results)</span>
-                    </label>
+                  
                 </div>
             </div>
 

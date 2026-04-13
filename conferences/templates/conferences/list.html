@@ -3,96 +3,140 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conference Database - Cerist</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
         body {
             font-family: 'Poppins', sans-serif;
+            margin: 0;
             background: #f4f7fb;
-            min-height: 100vh;
-            display: flex;
         }
-        
-        /* Sidebar */
-        .sidebar {
+
+        /* Sidebar Layout */
+        .side-bar {
             width: 250px;
-            background: #EEF3F7;
-            padding: 30px 20px;
-            position: fixed;
             height: 100vh;
-            left: 0;
+            background: #EEF3F7;
+            position: fixed;
             top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+            box-sizing: border-box;
         }
+
         .logo {
             margin-bottom: 40px;
             padding-left: 10px;
         }
+
         .logo img {
             max-width: 150px;
         }
-        .sidebar nav {
+
+        .side-bar nav {
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
+
         .nav-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 15px;
-            border-radius: 10px;
             text-decoration: none;
             color: rgba(0, 0, 0, 0.7);
-            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: 10px;
             transition: all 0.3s;
+            font-size: 15px;
         }
+
         .nav-item:hover {
             background: rgba(77, 113, 187, 0.1);
             color: #4D71BB;
         }
+
         .nav-item.active {
             background: rgba(77, 113, 187, 0.2);
             color: #4D71BB;
             font-weight: 600;
         }
+
+        .nav-item-admin {
+            background: #1e40af !important;
+            color: white !important;
+            margin-top: 20px;
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+        }
+        .nav-item-admin:hover {
+            background: #1e3a8a !important;
+            color: white !important;
+        }
+
         .nav-icon {
-            margin-right: 12px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             min-width: 24px;
         }
-        .nav-icon svg {
-            width: 22px;
-            height: 22px;
+
+        .floating-logout {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            z-index: 1000;
         }
-        
-        .main-content {
+
+        .logout-btn-modern {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-weight: 500;
+            color: #ff4757;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 71, 87, 0.2);
+        }
+
+        .logout-btn-modern:hover {
+            background: #ff4757;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 71, 87, 0.4);
+        }
+
+        /* Main Content Area */
+        .main-board {
             margin-left: 250px;
-            flex: 1;
             padding: 40px;
         }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 30px;
-        }
-        .header-left h1 {
-            font-size: 35px;
+
+        .header h1 {
             color: #173E8F;
-            margin-bottom: 8px;
+            font-size: 35px;
+            margin-top: 20px;
+            margin-bottom: 10px;
         }
-        .header-left p {
+
+        .header .subtitle {
             color: rgba(0, 0, 0, 0.73);
             font-size: 20px;
             font-weight: 200;
+            margin-bottom: 30px;
         }
+
         .btn-add {
             background: #1e40af;
             color: white;
@@ -104,26 +148,33 @@
             align-items: center;
             gap: 8px;
             transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 20px;
         }
+
         .btn-add:hover {
-            background:  #1e3a8a ;
+            background: #1e3a8a;
             transform: translateY(-2px);
         }
-        
-        /* Table */
-        .table-container {
+
+        /* Table Styling */
+        .card {
             background: white;
             border-radius: 15px;
             padding: 30px;
-            box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.1);
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
         }
+
         thead {
             background: #f9fafb;
         }
+
         th {
             padding: 15px;
             text-align: left;
@@ -132,21 +183,23 @@
             font-size: 14px;
             border-bottom: 2px solid #e5e7eb;
         }
+
         td {
             padding: 18px 15px;
             border-bottom: 1px solid #f3f4f6;
             color: #1f2937;
             font-size: 14px;
         }
+
         tbody tr:hover {
             background: #f9fafb;
         }
-        
-        /* Action Buttons */
+
         .action-btns {
             display: flex;
             gap: 8px;
         }
+
         .btn-edit, .btn-delete {
             padding: 8px 16px;
             border-radius: 8px;
@@ -161,27 +214,31 @@
             cursor: pointer;
             background: white;
         }
+
         .btn-edit {
             color: #2563eb;
             border-color: #2563eb;
         }
+
         .btn-edit:hover {
             background: #eff6ff;
         }
+
         .btn-delete {
             color: #dc2626;
             border-color: #dc2626;
         }
+
         .btn-delete:hover {
             background: #fef2f2;
         }
-        
-        /* Empty State */
+
         .empty-state {
             text-align: center;
             padding: 80px 20px;
             color: #6b7280;
         }
+
         .empty-state h3 {
             font-size: 20px;
             margin-bottom: 10px;
@@ -190,22 +247,34 @@
     </style>
 </head>
 <body>
+
+    <!-- Logout Button -->
+    <div class="floating-logout">
+        <form method="POST" action="{% url 'accounts:logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="logout-btn-modern">
+                <span><i class="bi bi-box-arrow-left"></i> Logout</span>
+            </button>
+        </form>
+    </div>
+
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="side-bar">
         <div class="logo">
             <img src="{% static 'images/cerist_logo.png' %}" alt="Cerist">
         </div>
-        
-        <nav>
+
+        <nav> 
             <a href="{% url 'dashboard' %}" class="nav-item">
                 <span class="nav-icon">
-             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 40 40" fill="none">
-               <path d="M14 5H9.33333C8.62609 5 7.94781 5.28095 7.44771 5.78105C6.94762 6.28115 6.66667 6.95942 6.66667 7.66667V15.6667C6.66667 16.0169 6.73564 16.3636 6.86965 16.6872C7.00367 17.0107 7.20009 17.3047 7.44771 17.5523C7.69534 17.7999 7.98931 17.9963 8.31284 18.1303C8.63638 18.2644 8.98314 18.3333 9.33333 18.3333H14C14.3502 18.3333 14.697 18.2644 15.0205 18.1303C15.344 17.9963 15.638 17.7999 15.8856 17.5523C16.1332 17.3047 16.3297 17.0107 16.4637 16.6872C16.5977 16.3636 16.6667 16.0169 16.6667 15.6667V7.66667C16.6667 6.95942 16.3857 6.28115 15.8856 5.78105C15.3855 5.28095 14.7072 5 14 5ZM14 25H9.33333C8.62609 25 7.94781 25.281 7.44771 25.781C6.94762 26.2811 6.66667 26.9594 6.66667 27.6667V32.3333C6.66667 33.0406 6.94762 33.7189 7.44771 34.2189C7.94781 34.719 8.62609 35 9.33333 35H14C14.7072 35 15.3855 34.719 15.8856 34.2189C16.3857 33.7189 16.6667 33.0406 16.6667 32.3333V27.6667C16.6667 26.9594 16.3857 26.2811 15.8856 25.781C15.3855 25.281 14.7072 25 14 25ZM30.6667 5H26C25.2928 5 24.6145 5.28095 24.1144 5.78105C23.6143 6.28115 23.3333 6.95942 23.3333 7.66667V12.3333C23.3333 13.0406 23.6143 13.7189 24.1144 14.219C24.6145 14.719 25.2928 15 26 15H30.6667C31.3739 15 32.0522 14.719 32.5523 14.219C33.0524 13.7189 33.3333 13.0406 33.3333 12.3333V7.66667C33.3333 6.95942 33.0524 6.28115 32.5523 5.78105C32.0522 5.28095 31.3739 5 30.6667 5ZM30.6667 21.6667H26C25.2928 21.6667 24.6145 21.9476 24.1144 22.4477C23.6143 22.9478 23.3333 23.6261 23.3333 24.3333V32.3333C23.3333 33.0406 23.6143 33.7189 24.1144 34.2189C24.6145 34.719 25.2928 35 26 35H30.6667C31.3739 35 32.0522 34.719 32.5523 34.2189C33.0524 33.7189 33.3333 33.0406 33.3333 32.3333V24.3333C33.3333 23.6261 33.0524 22.9478 32.5523 22.4477C32.0522 21.9476 31.3739 21.6667 30.6667 21.6667Z" stroke="black" stroke-width="3" stroke-miterlimit="10" stroke-linejoin="round" stroke-opacity="0.7"/>
-              </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 5H9.33333C8.62609 5 7.94781 5.28095 7.44771 5.78105C6.94762 6.28115 6.66667 6.95942 6.66667 7.66667V15.6667C6.66667 16.0169 6.73564 16.3636 6.86965 16.6872C7.00367 17.0107 7.20009 17.3047 7.44771 17.5523C7.69534 17.7999 7.98931 17.9963 8.31284 18.1303C8.63638 18.2644 8.98314 18.3333 9.33333 18.3333H14C14.3502 18.3333 14.697 18.2644 15.0205 18.1303C15.344 17.9963 15.638 17.7999 15.8856 17.5523C16.1332 17.3047 16.3297 17.0107 16.4637 16.6872C16.5977 16.3636 16.6667 16.0169 16.6667 15.6667V7.66667C16.6667 6.95942 16.3857 6.28115 15.8856 5.78105C15.3855 5.28095 14.7072 5 14 5ZM14 25H9.33333C8.62609 25 7.94781 25.281 7.44771 25.781C6.94762 26.2811 6.66667 26.9594 6.66667 27.6667V32.3333C6.66667 33.0406 6.94762 33.7189 7.44771 34.2189C7.94781 34.719 8.62609 35 9.33333 35H14C14.7072 35 15.3855 34.719 15.8856 34.2189C16.3857 33.7189 16.6667 33.0406 16.6667 32.3333V27.6667C16.6667 26.9594 16.3857 26.2811 15.8856 25.781C15.3855 25.281 14.7072 25 14 25ZM30.6667 5H26C25.2928 5 24.6145 5.28095 24.1144 5.78105C23.6143 6.28115 23.3333 6.95942 23.3333 7.66667V12.3333C23.3333 13.0406 23.6143 13.7189 24.1144 14.219C24.6145 14.719 25.2928 15 26 15H30.6667C31.3739 15 32.0522 14.719 32.5523 14.219C33.0524 13.7189 33.3333 13.0406 33.3333 12.3333V7.66667C33.3333 6.95942 33.0524 6.28115 32.5523 5.78105C32.0522 5.28095 31.3739 5 30.6667 5ZM30.6667 21.6667H26C25.2928 21.6667 24.6145 21.9476 24.1144 22.4477C23.6143 22.9478 23.3333 23.6261 23.3333 24.3333V32.3333C23.3333 33.0406 23.6143 33.7189 24.1144 34.2189C24.6145 34.719 25.2928 35 26 35H30.6667C31.3739 35 32.0522 34.719 32.5523 34.2189C33.0524 33.7189 33.3333 33.0406 33.3333 32.3333V24.3333C33.3333 23.6261 33.0524 22.9478 32.5523 22.4477C32.0522 21.9476 31.3739 21.6667 30.6667 21.6667Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                 </span>
                 Dashboard
             </a>
-             <a href="{% url 'scraping_page' %}" class="nav-item">
+
+            <a href="{% url 'scraping_page' %}" class="nav-item">
                 <span class="nav-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 30 30" fill="none">
                         <g clip-path="url(#clip0_6_16)">
@@ -215,6 +284,7 @@
                 </span>
                 Scraping
             </a>
+    
             <a href="{% url 'conference_list' %}" class="nav-item active">
                 <span class="nav-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48" fill="none">
@@ -223,76 +293,82 @@
                 </span>
                 Database
             </a>
-            
-           
+
+            {% if request.user.is_staff %}
+            <a href="{% url 'accounts:admin_dashboard' %}" class="nav-item nav-item-admin">
+                <span class="nav-icon">
+                    <i class="bi bi-speedometer2" style="font-size: 20px;"></i>
+                </span>
+                <span>Admin Panel</span>
+            </a>
+            {% endif %}
         </nav>
     </div>
-    
+
     <!-- Main Content -->
-    <div class="main-content">
+    <div class="main-board">
         <div class="header">
-            <div class="header-left">
-                <h1>Conference Database</h1>
-                <p>Manage conference listings and details</p>
-            </div>
-            <a href="{% url 'conference_create' %}" class="btn-add">
-                + Add New Conference
-            </a>
+            <h1>Conference Database</h1>
+            <div class="subtitle">Manage conference listings and details</div>
         </div>
-        <div class="table-container">
-    {% if conferences %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Domain</th>
-                    <th>Date</th>
-                    <th>Place</th>
-                    <th>Audience</th>
-                    <th>Acts</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for conference in conferences %}
-                <tr>
-                    <td><strong>{{ conference.name }}</strong></td>
-                    <td>{{ conference.domain }}</td>
-                    <td>{{ conference.date }}</td>
-                    <td>{{ conference.location }}</td>
-                    <td>{{ conference.get_audience_display }}</td>
-                    <td>{{ conference.acts|yesno:"Yes,No" }}</td>
-                    <td>
-                        <div class="action-btns">
-                            <a href="{% url 'conference_edit' conference.id %}" class="btn-edit">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                </svg>
-                                Edit
-                            </a>
-                         <a href="{% url 'delete_conference' conference.id %}">
-                                {% csrf_token %}
-                                <button type="submit" class="btn-delete" >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                    </svg>
-                                    Delete
-                                </button>
-                           </a>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <div class="empty-state">
-            <h3>No conferences yet</h3>
-            <p>Click "Add New Conference" to create your first conference</p>
+
+        <a href="{% url 'conference_create' %}" class="btn-add">
+            + Add New Conference
+        </a>
+
+        <div class="card">
+            {% if conferences %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Domain</th>
+                            <th>Date</th>
+                            <th>Place</th>
+                            <th>Audience</th>
+                            <th>Acts</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for conference in conferences %}
+                        <tr>
+                            <td><strong>{{ conference.name }}</strong></td>
+                            <td>{{ conference.domain }}</td>
+                            <td>{{ conference.date }}</td>
+                            <td>{{ conference.location }}</td>
+                            <td>{{ conference.get_audience_display }}</td>
+                            <td>{{ conference.acts|yesno:"Yes,No" }}</td>
+                            <td>
+                                <div class="action-btns">
+                                    <a href="{% url 'conference_edit' conference.id %}" class="btn-edit">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                        </svg>
+                                        Edit
+                                    </a>
+                                    <a href="{% url 'delete_conference' conference.id %}" class="btn-delete">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                        </svg>
+                                        Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No conferences yet</h3>
+                    <p>Click "Add New Conference" to create your first conference</p>
+                </div>
+            {% endif %}
         </div>
-    {% endif %}
-</div>
-     
+    </div>
+
+</body>
 </html>
