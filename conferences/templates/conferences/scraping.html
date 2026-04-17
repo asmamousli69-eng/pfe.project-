@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scraping - Add University Website</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Add Bootstrap Icons for better icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         * {
@@ -26,8 +25,9 @@
             padding: 20px;
         }
 
-        .side-bar {
-      width: 200px;
+      /* Sidebar */
+    .side-bar {
+      width: 250px;
       height: 100%;
       background: #EEF3F7;
       position: fixed;
@@ -37,6 +37,7 @@
       flex-direction: column;
       padding: 20px;
     }
+
 
     .logo {
       margin-bottom: 40px;
@@ -336,11 +337,7 @@
             transform: translateY(0);
         }
 
-        .btn-add i {
-            font-size: 18px;
-        }
-
-        /* Recent URLs (optional) */
+        /* Recent URLs - DYNAMIC */
         .recent-urls {
             margin-top: 30px;
             padding-top: 20px;
@@ -379,6 +376,10 @@
 
         .url-item span {
             color: #666;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 400px;
         }
 
         .url-item i {
@@ -403,6 +404,13 @@
         .status .pending {
             color: #ffa502;
         }
+
+        .empty-state {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -413,34 +421,8 @@
   </div>
 
   <nav> 
-    <a href="{% url 'dashboard' %}" >
-      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 40 40" fill="none">
-        <path d="M14 5H9.33333C8.62609 5 7.94781 5.28095 7.44771 5.78105C6.94762 6.28115 6.66667 6.95942 6.66667 7.66667V15.6667C6.66667 16.0169 6.73564 16.3636 6.86965 16.6872C7.00367 17.0107 7.20009 17.3047 7.44771 17.5523C7.69534 17.7999 7.98931 17.9963 8.31284 18.1303C8.63638 18.2644 8.98314 18.3333 9.33333 18.3333H14C14.3502 18.3333 14.697 18.2644 15.0205 18.1303C15.344 17.9963 15.638 17.7999 15.8856 17.5523C16.1332 17.3047 16.3297 17.0107 16.4637 16.6872C16.5977 16.3636 16.6667 16.0169 16.6667 15.6667V7.66667C16.6667 6.95942 16.3857 6.28115 15.8856 5.78105C15.3855 5.28095 14.7072 5 14 5ZM14 25H9.33333C8.62609 25 7.94781 25.281 7.44771 25.781C6.94762 26.2811 6.66667 26.9594 6.66667 27.6667V32.3333C6.66667 33.0406 6.94762 33.7189 7.44771 34.2189C7.94781 34.719 8.62609 35 9.33333 35H14C14.7072 35 15.3855 34.719 15.8856 34.2189C16.3857 33.7189 16.6667 33.0406 16.6667 32.3333V27.6667C16.6667 26.9594 16.3857 26.2811 15.8856 25.781C15.3855 25.281 14.7072 25 14 25ZM30.6667 5H26C25.2928 5 24.6145 5.28095 24.1144 5.78105C23.6143 6.28115 23.3333 6.95942 23.3333 7.66667V12.3333C23.3333 13.0406 23.6143 13.7189 24.1144 14.219C24.6145 14.719 25.2928 15 26 15H30.6667C31.3739 15 32.0522 14.719 32.5523 14.219C33.0524 13.7189 33.3333 13.0406 33.3333 12.3333V7.66667C33.3333 6.95942 33.0524 6.28115 32.5523 5.78105C32.0522 5.28095 31.3739 5 30.6667 5ZM30.6667 21.6667H26C25.2928 21.6667 24.6145 21.9476 24.1144 22.4477C23.6143 22.9478 23.3333 23.6261 23.3333 24.3333V32.3333C23.3333 33.0406 23.6143 33.7189 24.1144 34.2189C24.6145 34.719 25.2928 35 26 35H30.6667C31.3739 35 32.0522 34.719 32.5523 34.2189C33.0524 33.7189 33.3333 33.0406 33.3333 32.3333V24.3333C33.3333 23.6261 33.0524 22.9478 32.5523 22.4477C32.0522 21.9476 31.3739 21.6667 30.6667 21.6667Z" stroke="black" stroke-width="3" stroke-opacity=""/>
-      </svg>
-      <span>Dashboard</span>
-    </a>
-
-    <a href="{% url 'scraping_page' %}" class="active">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 30 30" fill="none">
-        <g clip-path="url(#clip0_6_16)">
-          <path d="M26.1973 5.05078C23.4551 1.95703 19.4648 0 15 0C6.71484 0 0 6.71484 0 15H3.75C3.75 8.7832 8.7832 3.75 15 3.75C18.4277 3.75 21.4688 5.30273 23.5254 7.72266L19.998 11.25H30V1.24805L26.1973 5.05078ZM15 26.25C11.5723 26.25 8.53125 24.6973 6.47461 22.2773L10.002 18.75H0V28.752L3.80273 24.9492C6.54492 28.043 10.541 30 15 30C23.2852 30 30 23.2852 30 15H26.25C26.25 21.2168 21.2168 26.25 15 26.25Z" fill="#4D71BB"/>
-        </g>
-      </svg>
-      <span>Scraping</span>
-    </a>
- 
-    <a href="{% url 'conference_list' %}">
-      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 48 48" fill="none">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M40.1419 24V27.9996H30.828L43.2115 40.383L40.383 43.2114L27.9998 30.8282L28.0003 40.1413H24.0008L24 24H40.1419ZM20.0002 4.00003C28.8366 4.00003 36 7.58175 36 12V20H32.0001V17.2916L32.0359 17.2711L31.9708 17.3082C29.0397 18.9594 24.763 20.0001 20.0001 20.0001C15.1904 20.0001 10.8764 18.9389 7.94347 17.2595L7.99934 17.2913L7.99869 22H8.00009C8.00009 22.3581 8.70894 23.1961 10.4752 24.0792C12.8697 25.2764 16.2912 26.0001 20.0001 26.0001V30C15.2202 30 10.9298 28.9521 7.99794 27.2905L7.99747 31.8562L8.00028 32.0058C8.11015 33.5311 13.2185 36 20.0001 36V40C11.3599 40 4.31928 36.5757 4.01065 32.2933L4.00006 32.0001V12C4.00006 7.58175 11.1635 4.00003 20.0001 4.00003M20.0001 8.00006C16.2913 8.00006 12.8697 8.72362 10.4752 9.92091C8.70894 10.804 8.00009 11.642 8.00009 12C8.00009 12.3581 8.70894 13.1961 10.4752 14.0792C12.8697 15.2764 16.2912 16 20.0001 16C23.7088 16 27.1304 15.2765 29.5249 14.0791C31.2912 13.196 32.0001 12.358 32.0001 12C32.0001 11.642 31.2912 10.804 29.5249 9.92091C27.1304 8.72362 23.7088 8.00006 20.0001 8.00006Z" fill="black" fill-opacity="0.7"/>
-      </svg>
-      <span>Database</span>
-    </a>
-    {% if request.user.is_staff %}
-<a href="{% url 'accounts:admin_dashboard' %}" style="background: #1e40af; color: white; border-radius: 10px; margin-top: 20px;">
-  <i class="bi bi-speedometer2" style="font-size: 24px;"></i>
-  <span>Admin Panel</span>
-</a>
-{% endif %}
+   
+    {% include 'accounts/sidebar.html' %}
 
   </nav>
 </div>
@@ -503,7 +485,6 @@
                         <input type="checkbox" name="scrape_faculties">
                         <span>Include faculty details</span>
                     </label>
-                  
                 </div>
             </div>
 
@@ -525,74 +506,94 @@
                     Cancel
                 </a>
                 <button type="submit" class="btn btn-add" id="submit-btn">
-                    <i class="bi bi-plus-lg"></i>
-                    Add URL
+                    Submit URL
                 </button>
             </div>
         </form>
 
-        <!-- Recent URLs (optional) -->
+        <!-- Recent URLs (Dynamic from database) -->
         <div class="recent-urls">
             <div class="recent-header">
                 <i class="bi bi-clock-history"></i>
-                <span>Recently Added URLs</span>
+                <span>Recently Added Conferences</span>
             </div>
             <div class="url-list">
-                <div class="url-item">
-                    <span>https://www.usthb.edu.dz</span>
-                    <div class="status">
-                        <i class="bi bi-check-circle-fill success"></i>
-                        <span>Completed</span>
+                {% if recent_conferences %}
+                    {% for conf in recent_conferences %}
+                    <div class="url-item">
+                        <span title="{{ conf.name }}">{{ conf.name|truncatechars:50 }}</span>
+                        <div class="status">
+                            <i class="bi bi-check-circle-fill success"></i>
+                            <span class="success">Saved</span>
+                        </div>
                     </div>
-                </div>
-                <div class="url-item">
-                    <span>https://www.univ-alger.dz</span>
-                    <div class="status">
-                        <i class="bi bi-hourglass-split pending"></i>
-                        <span>In Progress</span>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="bi bi-inbox" style="font-size: 24px; color: #ccc; display: block; margin-bottom: 10px;"></i>
+                        No conferences scraped yet. Enter a URL above to get started.
                     </div>
-                </div>
-                <div class="url-item">
-                    <span>https://www.ensa.dz</span>
-                    <div class="status">
-                        <i class="bi bi-check-circle-fill success"></i>
-                        <span>Completed</span>
-                    </div>
-                </div>
+                {% endif %}
             </div>
         </div>
     </div>
 
-    <!-- JavaScript for progress simulation (optional) -->
+    <!-- JavaScript for progress simulation -->
     <script>
-        document.getElementById('scraping-form').addEventListener('submit', function(e) {
-            e.preventDefault(); // Remove this in production, it's just for demo
+        document.getElementById('scraping-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
             
-            // Show progress section
             const progressSection = document.getElementById('progress-section');
             const submitBtn = document.getElementById('submit-btn');
             const progressFill = document.getElementById('progress-fill');
             const progressPercent = document.getElementById('progress-percent');
+            const form = e.target;
             
             progressSection.style.display = 'block';
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Scraping...';
+            submitBtn.innerHTML = 'Scraping...';
             
-            // Simulate progress (replace with actual AJAX call in production)
             let progress = 0;
             const interval = setInterval(() => {
-                progress += 10;
-                progressFill.style.width = progress + '%';
-                progressPercent.textContent = progress + '%';
-                
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        window.location.href = "{% url 'dashboard' %}"; // Redirect when done
-                    }, 500);
+                if (progress < 90) {
+                    progress += 2;
+                    progressFill.style.width = progress + '%';
+                    progressPercent.textContent = progress + '%';
                 }
-            }, 500);
+            }, 300);
+            
+            try {
+                const formData = new FormData(form);
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    }
+                });
+                
+                clearInterval(interval);
+                
+                if (response.ok) {
+                    progressFill.style.width = '100%';
+                    progressPercent.textContent = '100%';
+                    setTimeout(() => {
+                        window.location.href = response.url;
+                    }, 500);
+                } else {
+                    alert('Scraping failed! Please try again.');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Submit URL';
+                }
+            } catch (error) {
+                clearInterval(interval);
+                console.error('Error:', error);
+                alert('Network error! Please check your connection.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Submit URL';
+            }
         });
     </script>
+
 </body>
 </html>

@@ -10,11 +10,10 @@ urlpatterns = [
     path("signup/", views.signup_view, name="signup"),
     path("logout/", views.logout_view, name="logout"),
     
-    # Password reset URLs (with success_url fixed)
+    # Password reset - CUSTOM (notifies admin, no self-reset link)
     path('forgot-password/',
-         auth_views.PasswordResetView.as_view(
-             template_name='accounts/forgot_password.html',
-             success_url='/accounts/forgot-password/done/'  # ADD THIS
+         views.AdminNotifiedPasswordResetView.as_view(
+             template_name='accounts/forgot_password.html'
          ),
          name='password_reset'),
 
@@ -23,19 +22,16 @@ urlpatterns = [
              template_name='accounts/forgot_password_done.html'
          ),
          name='password_reset_done'),
-
-    path('reset/<uidb64>/<token>/',
-         auth_views.PasswordResetConfirmView.as_view(
-             template_name='accounts/forgot_password_confirm.html',
-             success_url='/accounts/reset/done/'  # ADD THIS
-         ),
-         name='password_reset_confirm'),
-
-    path('reset/done/',
-         auth_views.PasswordResetCompleteView.as_view(
-             template_name='accounts/forgot_password_complete.html'
-         ),
-         name='password_reset_complete'),
+    
+     path('password-change/', 
+         views.CustomPasswordChangeView.as_view(), 
+         name='password_change'),
+    path('password-change/done/', 
+         auth_views.PasswordChangeDoneView.as_view(
+             template_name='accounts/password_change_done.html'  
+         ), 
+         name='password_change_done'),
+  
 
     # Admin URLs
     path('admin/dashboard/', views.admin_dashboard, name='admin_dashboard'),
@@ -43,4 +39,10 @@ urlpatterns = [
     path('admin/users/<int:user_id>/approve/', views.approve_user, name='approve_user'),
     path('admin/users/<int:user_id>/deactivate/', views.deactivate_user, name='deactivate_user'),
     path('admin/users/<int:user_id>/delete/', views.delete_user, name='delete_user'),
+    path('admin/reset-requests/', views.password_reset_requests, name='password_reset_requests'),
+    path('admin/reset-password/<int:user_id>/', views.generate_temp_password_view, name='generate_temp_password'),
+
+  
+
+
 ]

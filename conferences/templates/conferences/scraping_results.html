@@ -1,0 +1,518 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scraping Results - Conference Extracted</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f7fb;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            justify-content:center;
+            padding: 20px;
+        }
+        .side-bar {
+            width: 250px;
+            height: 100%;
+            background: #EEF3F7;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        .logo { margin-bottom: 40px; }
+        .logo img { max-width: 150px; }
+        .side-bar nav {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .side-bar nav a {
+            text-decoration: none;
+            color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .side-bar nav a:hover {
+            background: rgba(77, 113, 187, 0.1);
+            color: #4D71BB;
+        }
+        .side-bar nav a.active {
+            background: rgba(77, 113, 187, 0.2);
+            color: #4D71BB;
+            font-weight: 600;
+        }
+        .scraping-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 800px;
+            max-width: 100%;
+            padding: 40px 50px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .scraping-icon {
+            width: 60px;
+            height: 60px;
+            background: #e8f0fe;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .scraping-icon.success {
+            background: #d4edda;
+        }
+        .scraping-icon.success i {
+            color: #28a745;
+        }
+        .scraping-icon i {
+            font-size: 30px;
+            color: #173E8F;
+        }
+        .header-text h1 {
+            color: #173E8F;
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .header-text p {
+            color: #666;
+            font-size: 14px;
+        }
+        .conference-list {
+            margin-bottom: 25px;
+        }
+        .conference-list-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: #173E8F;
+        }
+        .conference-list-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .conference-count {
+            background: #173E8F;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 13px;
+        }
+        .conference-card {
+            border: 2px solid #e0e7f0;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .conference-card:hover {
+            border-color: #173E8F;
+            background: #f8faff;
+        }
+        .conference-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .conference-card .radio {
+            width: 22px;
+            height: 22px;
+            border: 2px solid #173E8F;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .conference-card.selected .radio {
+            background: #28a745;
+            border-color: #28a745;
+        }
+        .conference-card.selected .radio i {
+            color: white;
+            font-size: 14px;
+        }
+        .conference-info {
+            flex: 1;
+        }
+        .conference-info .name {
+            font-weight: 600;
+            color: #173E8F;
+            margin-bottom: 5px;
+            font-size: 15px;
+        }
+        .conference-info .meta {
+            font-size: 13px;
+            color: #666;
+        }
+        .select-btn {
+            padding: 8px 16px;
+            background: #173E8F;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+        .results-table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e0e7f0;
+            font-size: 14px;
+        }
+        .results-table tr:last-child td {
+            border-bottom: none;
+        }
+        .results-table td:first-child {
+            width: 20%;
+            background: #f8faff;
+            color: #173E8F;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            border-right: 2px solid #e0e7f0;
+        }
+        .results-table td:last-child {
+            color: #333;
+        }
+        .results-table tr:nth-child(even) {
+            background: #fafbfc;
+        }
+        .url-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #e8f0fe;
+            color: #173E8F;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        .topic-tag {
+            display: inline-block;
+            background: #e8f0fe;
+            color: #173E8F;
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin: 2px;
+            font-size: 12px;
+        }
+        .alert {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .alert-success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+        .save-section {
+            background: #f8faff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid #e0e7f0;
+        }
+        .save-section h4 {
+            color: #173E8F;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        .btn {
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-cancel {
+            background: #e0e7f0;
+            color: #173E8F;
+        }
+        .btn-cancel:hover {
+            background: #d1dae5;
+        }
+        .btn-add {
+            background: #173E8F;
+            color: white;
+        }
+        .btn-add:hover {
+            background: #14367c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(23, 62, 143, 0.3);
+        }
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #218838;
+        }
+        .btn i {
+            font-size: 16px;
+        }
+        .no-selection {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .no-selection i {
+            font-size: 48px;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="side-bar">
+        <div class="logo">
+            <img src="{% static 'images/cerist_logo.png' %}" alt="Cerist">
+        </div>
+        <nav> 
+            {% include 'accounts/sidebar.html' %}
+        </nav>
+    </div>
+
+    <div class="scraping-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="scraping-icon {% if conference %}success{% endif %}">
+                <i class="bi bi-{% if conference %}check-lg{% else %}list-check{% endif %}"></i>
+            </div>
+            <div class="header-text">
+                <h1>Scraping Complete!</h1>
+                <p>
+                    {% if count > 1 %}
+                        Found {{ count }} conferences on {{ source_url|truncatechars:40 }}
+                    {% else %}
+                        Conference information extracted successfully
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <!-- URL Badge -->
+        <div class="url-badge">
+            <i class="bi bi-link-45deg"></i>
+            {{ source_url }}
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <div>{{ message }}</div>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if conferences %}
+        
+            <!-- Conference Selector -->
+            <div class="conference-list">
+                <div class="conference-list-header">
+                    <i class="bi bi-list-ul"></i>
+                    <h3>{% if count > 1 %}Select a Conference{% else %}Conference Found{% endif %}</h3>
+                    <span class="conference-count">{{ count }}</span>
+                </div>
+                
+                {% for conf in conferences %}
+                <div class="conference-card {% if selected_idx == forloop.counter0|stringformat:'s' or count == 1 %}selected{% endif %}"
+                     onclick="window.location.href='?select={{ forloop.counter0 }}'">
+                    <div class="radio">
+                        {% if selected_idx == forloop.counter0|stringformat:'s' or count == 1 %}
+                            <i class="bi bi-check-lg"></i>
+                        {% endif %}
+                    </div>
+                    <div class="conference-info">
+                        <div class="name">{{ conf.conference_name|default:"Unnamed Conference"|truncatechars:60 }}</div>
+                        <div class="meta">
+                            <i class="bi bi-geo-alt"></i> {{ conf.location|default:"Location TBD" }} &nbsp;|&nbsp;
+                            <i class="bi bi-calendar"></i> {{ conf.dates|default:"Dates TBD" }}
+                            {% if conf.acronym %}&nbsp;|&nbsp; <span style="color: #173E8F; font-weight: 500;">{{ conf.acronym }}</span>{% endif %}
+                        </div>
+                    </div>
+                    {% if count > 1 %}
+                    <a href="?select={{ forloop.counter0 }}" class="select-btn">Select</a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Conference Details Table -->
+            {% if conference or count == 1 %}
+                {% with conf=conference|default:conferences.0 %}
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle-fill" style="font-size: 24px;"></i>
+                    <div>
+                        <strong>Conference Details</strong><br>
+                        Review the extracted information below
+                    </div>
+                </div>
+
+                <!-- Results Table -->
+                <table class="results-table">
+                    <tr>
+                        <td>Name</td>
+                        <td style="font-size: 16px; font-weight: 600; color: #173E8F;">
+                            {{ conf.conference_name|default:"Not detected" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Domain</td>
+                        <td>
+                            {% if conf.acronym %}
+                                <span class="topic-tag">{{ conf.acronym }}</span>
+                            {% endif %}
+                            <span class="topic-tag">Computer Science</span>
+                            {% if conf.topics %}
+                                {% for topic in conf.topics|slice:":2" %}
+                                    <span class="topic-tag">{{ topic|truncatechars:30 }}</span>
+                                {% endfor %}
+                            {% else %}
+                                <span class="topic-tag">Pattern Analysis</span>
+                                <span class="topic-tag">Intelligent Systems</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Date</td>
+                        <td>
+                            <i class="bi bi-calendar-event" style="color: #173E8F; margin-right: 8px;"></i>
+                            {{ conf.dates|default:"TBD" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Place</td>
+                        <td>
+                            <i class="bi bi-geo-alt" style="color: #173E8F; margin-right: 8px;"></i>
+                            {{ conf.location|default:"TBD" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Audience</td>
+                        <td>Researchers, Academics, IEEE Members, PhD Students</td>
+                    </tr>
+                    <tr>
+                        <td>Acts</td>
+                        <td>
+                            {% if conf.submission_deadline %}
+                                <span style="color: #dc3545; font-weight: 500;">
+                                    <i class="bi bi-clock" style="margin-right: 5px;"></i>
+                                    Submission Deadline: {{ conf.submission_deadline }}
+                                </span>
+                            {% else %}
+                                <span style="color: #28a745; font-weight: 500;">
+                                    <i class="bi bi-check-circle" style="margin-right: 5px;"></i>
+                                    Call for Papers Open
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Save to Database Section -->
+                <div class="save-section">
+                    <h4><i class="bi bi-save"></i> Save to Database</h4>
+                    <p style="color: #666; font-size: 14px; margin-bottom: 15px;">
+                        Add this conference to your managed conferences list.
+                    </p>
+                    <form method="POST" action="{% url 'save_conference' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="conference_idx" value="{{ selected_idx|default:0 }}">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-plus-lg"></i>
+                            Save Conference
+                        </button>
+                    </form>
+                </div>
+                {% endwith %}
+            {% else %}
+                <!-- No selection yet message -->
+                <div class="no-selection">
+                    <i class="bi bi-hand-index-thumb"></i>
+                    <h3 style="color: #173E8F; margin-bottom: 10px;">Select a Conference</h3>
+                    <p>Click on one of the conferences above to view its details.</p>
+                </div>
+            {% endif %}
+
+        {% else %}
+            <!-- Warning -->
+            <div class="alert alert-info">
+                <i class="bi bi-exclamation-triangle-fill" style="font-size: 24px;"></i>
+                <div>
+                    <strong>No Conferences Found</strong><br>
+                    The website might require different parsing. Try another URL.
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Buttons -->
+        <div class="button-group">
+            <a href="{% url 'dashboard' %}" class="btn btn-cancel">
+                <i class="bi bi-arrow-left"></i>
+                Back to Dashboard
+            </a>
+            <a href="{% url 'scraping_page' %}" class="btn btn-add">
+                <i class="bi bi-arrow-clockwise"></i>
+                Scrape Another URL
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
